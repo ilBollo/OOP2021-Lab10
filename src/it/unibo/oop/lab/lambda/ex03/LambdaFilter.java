@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -35,7 +37,21 @@ public final class LambdaFilter extends JFrame {
     private static final long serialVersionUID = 1760990730218643730L;
 
     private enum Command {
-        IDENTITY("No modifications", Function.identity());
+        IDENTITY("No modifications", Function.identity()),
+        TO_LOWER_CASE("lowercase", a -> a.toLowerCase()),
+        COUNT_OF_CHARS("Count chars", a -> Integer.toString(a.length())),
+        COUNT_LINES("Count lines", a -> Long.toString(a.lines().count())),
+        LIST_IN_ORDER("List words in aphabetical order", a ->
+            Arrays.stream(a.split("\\s+"))
+            .sorted()
+            .collect(Collectors.joining("\n"))),
+        COUNT_WORDS("Count words", a ->
+            Arrays.stream(a.split("\\s+"))
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+            .entrySet().stream()
+            .map(e -> e.getKey() + " ->" + e.getValue())
+            .collect(Collectors.joining("\n")));
+
 
         private final String commandName;
         private final Function<String, String> fun;
@@ -53,6 +69,7 @@ public final class LambdaFilter extends JFrame {
         public String translate(final String s) {
             return fun.apply(s);
         }
+
     }
 
     private LambdaFilter() {
@@ -90,4 +107,5 @@ public final class LambdaFilter extends JFrame {
         final LambdaFilter gui = new LambdaFilter();
         gui.setVisible(true);
     }
+
 }

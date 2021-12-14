@@ -88,7 +88,6 @@ public final class MusicGroupImpl implements MusicGroup {
                 .collect(Collectors.maxBy(Comparator.comparingDouble(Entry::getValue)))
                 .flatMap(Entry::getKey);
     }
-    
 
     private static final class Song {
 
